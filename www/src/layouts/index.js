@@ -1,5 +1,6 @@
 import React from "react"
 import Helmet from "react-helmet"
+import { OutboundLink } from "gatsby-plugin-google-analytics"
 
 import Navigation from "../components/navigation"
 import MobileNavigation from "../components/navigation-mobile"
@@ -8,7 +9,7 @@ import SearchBar from "../components/searchbar-body"
 import tutorialSidebar from "../pages/docs/tutorial-links.yml"
 import docsSidebar from "../pages/docs/doc-links.yaml"
 import featuresSidebar from "../pages/docs/features-links.yaml"
-import { rhythm } from "../utils/typography"
+import { rhythm, options } from "../utils/typography"
 import presets, { colors } from "../utils/presets"
 import hex2rgba from "hex2rgba"
 import "../css/prism-coy.css"
@@ -27,6 +28,7 @@ class DefaultLayout extends React.Component {
   render() {
     const isHomepage = this.props.location.pathname == `/`
     const isBlog = this.props.location.pathname.slice(0, 6) === `/blog/`
+    const isBlogLanding = this.props.location.pathname === `/blog/`
     const isDoc = this.props.location.pathname.slice(0, 6) === `/docs/`
     const isTutorial =
       this.props.location.pathname.slice(0, 10) === `/tutorial/`
@@ -59,9 +61,9 @@ class DefaultLayout extends React.Component {
       width: rhythm(10),
       display: `none`,
       position: `fixed`,
-      top: `calc(${presets.headerHeight} - 1px)`,
+      top: `calc(${presets.headerHeight} + 2.8rem - 1px)`,
       overflowY: `auto`,
-      height: `calc(100vh - ${presets.headerHeight} + 1px)`,
+      height: `calc(100vh - ${presets.headerHeight} - 2.8rem + 1px)`,
       WebkitOverflowScrolling: `touch`,
       "::-webkit-scrollbar": {
         width: `6px`,
@@ -125,8 +127,34 @@ class DefaultLayout extends React.Component {
           <meta name="twitter:site" content="@gatsbyjs" />
           <meta name="og:type" content="website" />
           <meta name="og:site_name" content="GatsbyJS" />
+          <link
+            rel="canonical"
+            href={`https://gatsbyjs.org${this.props.location.pathname}`}
+          />
           <html lang="en" />
         </Helmet>
+        <div
+          css={{
+            width: `100%`,
+            padding: rhythm(1 / 2),
+            background: colors.ui.bright,
+            color: colors.gatsby,
+            fontFamily: options.headerFontFamily.join(`,`),
+            textAlign: `center`,
+            boxShadow: `inset 0px -3px 2px 0px ${colors.ui.bright}`,
+            zIndex: `3`,
+            position: isHomepage || isBlogLanding ? `absolute` : `fixed`,
+          }}
+        >
+          Live 2-day Gatsby training with Kyle Mathews! Sign up for{` `}
+          <OutboundLink
+            target="_blank"
+            rel="noopener"
+            href="https://workshop.me/2018-05-gatsby"
+          >
+            NYC in May
+          </OutboundLink>!
+        </div>
         <Navigation pathname={this.props.location.pathname} />
         <div
           className={hasSidebar ? `main-body has-sidebar` : `main-body`}
@@ -197,6 +225,7 @@ class DefaultLayout extends React.Component {
 
           <div
             css={{
+              marginTop: isHomepage || isBlog ? 0 : `calc(2.8rem - 1px)`,
               ...childrenMobileDisplay,
               [presets.Tablet]: {
                 paddingLeft: leftPadding(10),

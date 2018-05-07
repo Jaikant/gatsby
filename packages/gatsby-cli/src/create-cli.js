@@ -124,6 +124,10 @@ function buildLocalCommands(cli, isLocalSite) {
         type: `boolean`,
         default: false,
         describe: `Build site with link paths prefixed (set prefix in your config).`,
+      }).option(`no-uglify`, {
+        type: `boolean`,
+        default: false,
+        describe: `Build site without uglifying JS bundles (for debugging).`,
       }),
     handler: handlerP(
       getCommandHandler(`build`, (args, cmd) => {
@@ -180,9 +184,7 @@ module.exports = (argv, handlers) => {
 
   cli
     .usage(`Usage: $0 <command> [options]`)
-    .help(`h`)
     .alias(`h`, `help`)
-    .version()
     .alias(`v`, `version`)
     .option(`verbose`, {
       default: false,
